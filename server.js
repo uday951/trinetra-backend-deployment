@@ -207,6 +207,18 @@ app.get('/self-ping', (req, res) => {
   });
 });
 
+// Keep alive ping every 14 minutes
+if (process.env.NODE_ENV === 'production') {
+  setInterval(async () => {
+    try {
+      const response = await fetch('https://trinetra-backend-deployment.onrender.com/self-ping');
+      console.log('Self-ping:', response.status === 200 ? 'OK' : 'Failed');
+    } catch (error) {
+      console.log('Self-ping failed:', error.message);
+    }
+  }, 14 * 60 * 1000); // 14 minutes
+}
+
 // Add missing endpoint for frontend compatibility
 app.get('/api/apps/installed', (req, res) => {
   // Redirect to the existing apps route
