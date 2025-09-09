@@ -176,6 +176,14 @@ app.use('/api/security/realtime', realTimeSecurityRoutes);
 // Spam calls routes
 app.use('/api/spam-calls', spamCallsRoutes);
 
+// APK Protection routes
+const apkProtectionRoutes = require('./routes/apkProtection');
+app.use('/api/security/apk', apkProtectionRoutes);
+
+// Device APK Scanner routes
+const deviceAPKScannerRoutes = require('./routes/deviceAPKScanner');
+app.use('/api/device/apk', deviceAPKScannerRoutes);
+
 // Test endpoint
 app.get('/api/test', (req, res) => {
   console.log('Test endpoint hit from:', req.ip);
@@ -206,18 +214,6 @@ app.get('/self-ping', (req, res) => {
     uptime: process.uptime()
   });
 });
-
-// Keep alive ping every 14 minutes
-if (process.env.NODE_ENV === 'production') {
-  setInterval(async () => {
-    try {
-      const response = await fetch('https://trinetra-backend-deployment.onrender.com/self-ping');
-      console.log('Self-ping:', response.status === 200 ? 'OK' : 'Failed');
-    } catch (error) {
-      console.log('Self-ping failed:', error.message);
-    }
-  }, 14 * 60 * 1000); // 14 minutes
-}
 
 // Add missing endpoint for frontend compatibility
 app.get('/api/apps/installed', (req, res) => {
